@@ -1,1 +1,156 @@
-<h1>Hello World</h1>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web制作の苦闘 — AIとの対話と動画制作記録</title>
+  <style>
+    /* 全体基本スタイル */
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    header {
+      background: #24292e;
+      color: #fff;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    header h1 { margin: 0; font-size: 1.8rem; }
+    header p { margin-top: 0.5rem; opacity: 0.8; }
+    
+    container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      display: block;
+    }
+
+    section { margin-bottom: 3rem; }
+    h2 { border-bottom: 2px solid #007bff; padding-bottom: 0.5rem; color: #007bff; }
+
+    /* 横スライド（問答＆動画）エリア */
+    .slider-container {
+      display: flex;
+      overflow-x: auto;
+      gap: 1.5rem;
+      padding: 1rem 0;
+      scroll-snap-type: x mandatory;
+    }
+    .slide-card {
+      flex: 0 0 320px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .qa-box { margin-bottom: 1rem; }
+    .q-text { font-weight: bold; color: #d9534f; margin-bottom: 0.5rem; }
+    .a-text { color: #2e6da4; background: #f0f7fd; padding: 0.8rem; border-radius: 5px; font-size: 0.9rem; }
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9比率 */
+      height: 0;
+      overflow: hidden;
+      border-radius: 5px;
+      background: #000;
+    }
+    .video-container iframe {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%; border: 0;
+    }
+
+    /* 作品集（グリッド表示） */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .grid-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Web制作の苦闘</h1>
+    <p>65歳からの挑戦 — AIとの対話と横スライドで見る動画制作記録</p>
+  </header>
+
+  <container>
+    <!-- 1. AIとの問答＆制作動画（横スライド） -->
+    <section>
+      <h2>制作ストーリー（AIとの問答＆試作）</h2>
+      <p style="font-size:0.85rem; color:#666;">※左右にスクロールして各シーンをご覧いただけます。</p>
+      
+      <div class="slider-container">
+        <!-- シーン 1 -->
+        <div class="slide-card">
+          <div class="qa-box">
+            <div class="q-text">Q. 最初のコンセプトをどうまとめる？</div>
+            <div class="a-text">AI: まずは目的をシンプルにし、横スライド構成で一問一答を見せる演出を提案します。</div>
+          </div>
+          <div class="video-container">
+            <!-- YouTube等の埋め込みコード（サンプル） -->
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Scene 1" allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <!-- シーン 2 -->
+        <div class="slide-card">
+          <div class="qa-box">
+            <div class="q-text">Q. デザインの色合いはどうする？</div>
+            <div class="a-text">AI: 清潔感のあるブルーと落ち着いたダークグレーを基調にしましょう。</div>
+          </div>
+          <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Scene 2" allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <!-- シーン 3 -->
+        <div class="slide-card">
+          <div class="qa-box">
+            <div class="q-text">Q. GitHub Pagesでのドメイン設定は？</div>
+            <div class="a-text">AI: CNAMEを設定し、DNSの浸透を待つことでスムーズに移行できます。</div>
+          </div>
+          <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Scene 3" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. 完成作品集ギャラリー -->
+    <section>
+      <h2>完成作品集</h2>
+      <div class="grid-container">
+        <div class="grid-card">
+          <h3>作品タイトル A</h3>
+          <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Work A" allowfullscreen></iframe>
+          </div>
+        </div>
+        <div class="grid-card">
+          <h3>作品タイトル B</h3>
+          <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Work B" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+  </container>
+
+</body>
+</html>
