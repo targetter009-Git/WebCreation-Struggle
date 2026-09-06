@@ -86,45 +86,48 @@
       'documents/scene01.md',
       'documents/scene02.md'
     ];
-
-    // .mdファイルを読み込んでHTMLカードを作る関数
-    async function loadMarkdownSlides() {
-      const slider = document.getElementById('md-slider');
-      
-      for (const file of mdFiles) {
-        try {
-          const response = await fetch(file);
-          if (!response.ok) continue;
-          const text = await response.text();
-
-          // フロントマター（---で囲まれた部分）の簡易パース
-          const qMatch = text.match(/q:\s*(.*)/);
-          const aMatch = text.match(/a:\s*(.*)/);
-          const videoMatch = text.match(/video:\s*(.*)/);
-
-          const q = qMatch ? qMatch[1].trim() : '';
-          const a = aMatch ? aMatch[1].trim() : '';
-          const videoSrc = videoMatch ? videoMatch[1].trim() : '';
-
-          // スライドカードのHTML組み立て
-          const card = document.createElement('div');
-          card.className = 'slide-card';
-          card.innerHTML = `
-            <div class="qa-box">
-              <div class="q-text">Q. ${q}</div>
-              <div class="a-text">AI: ${a}</div>
-            </div>
-            <div class="video-box">
-              <video src="${videoSrc}" controls preload="metadata"></video>
-            </div>
-          `;
-
-          slider.appendChild(card);
-        } catch (e) {
-          console.error("ファイルの読み込みエラー:", file, e);
-        }
+async function loadMarkdownSlides() {
+  const slider = document.getElementById('md-slider');
+  
+  for (const file of mdFiles) {
+    try {
+      const response = await fetch(file);
+      if (!response.ok) {
+        // エラー内容を画面に直接表示する
+        slider.innerHTML += `<div style="color:red; padding:1rem;">読み込み失敗 (${response.status}): ${file}</div>`;
+        continue;
       }
+      const text = await response.text();
+
+      const qMatch = text.match(/q:\s*(.*)/);
+      const aMatch = text.match(/a:\s*(.*)/);
+      const videoMatch = text.match(/video:\s*(.*)/);
+
+      const q = qMatch ? qMatch[1].trim() : '';
+      const a = aMatch ? aMatch[1].trim() : '';
+      const videoSrc = videoMatch ? videoMatch[1].trim() : '';
+
+      const card = document.createElement('div');
+      card.className = 'slide-card';
+      card.innerHTML = `
+        <div class="qa-box">
+          <div class="q-text">Q. ${q}</div>
+          <div class="a-text">AI: ${a}</div>
+        </div>
+        <div class="video-box">
+          <video src="${videoSrc}" controls preload="metadata"></video>
+        </div>
+      `;
+
+      slider.appendChild(card);
+    } catch (e) {
+      slider.innerHTML += `<div style="color:red; padding:1rem;">エラー: ${file} (${e.message})</div>`;
     }
+  }
+}    
+
+//mdファイルを読み込んでHTMLカードを作る関数
+   
 
     // 実行
     loadMarkdownSlides();
