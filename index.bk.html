@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web制作の苦闘 — AIとの対話と動画制作記録</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    header {
+      background: #24292e;
+      color: #fff;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    header h1 { margin: 0; font-size: 1.8rem; }
+    header p { margin-top: 0.5rem; opacity: 0.8; }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    section { margin-bottom: 3rem; }
+    h2 { border-bottom: 2px solid #007bff; padding-bottom: 0.5rem; color: #007bff; }
+
+    /* 横スライドエリア */
+    .slider-container {
+      display: flex;
+      overflow-x: auto;
+      gap: 1.5rem;
+      padding: 1rem 0;
+      scroll-snap-type: x mandatory;
+    }
+    .slide-card {
+      flex: 0 0 320px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .qa-box { margin-bottom: 1rem; }
+    .q-text { font-weight: bold; color: #d9534f; margin-bottom: 0.5rem; }
+    .a-text { color: #2e6da4; background: #f0f7fd; padding: 0.8rem; border-radius: 5px; font-size: 0.9rem; }
+    
+    /* videoタグのレスポンシブ対応 */
+    .video-box video {
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Web制作の苦闘</h1>
+    <p>65歳からの挑戦 — AIとの対話と横スライドで見る動画制作記録</p>
+  </header>
+
+  <div class="container">
+    <section>
+      <h2>制作ストーリー（AIとの問答＆動画）</h2>
+      <p style="font-size:0.85rem; color:#666;">※左右にスクロールして各シーンをご覧いただけます。</p>
+      
+      <!-- ここに.mdから自動生成されたカードが注入されます -->
+      <div class="slider-container" id="md-slider"></div>
+    </section>
+  </div>
+
+  <script>
+    // GitHub Pagesで確実に読み込むため、先頭の ./ を外して指定します
+    const mdFiles = [
+      'documents/scene01.md',
+      'documents/scene02.md',
+      'documents/scene03.md',
+      'documents/scene04.md'
+    ];
+
+    async function loadMarkdownSlides() {
+      const slider = document.getElementById('md-slider');
+      slider.innerHTML = ''; // 初期化
+      
+      for (const file of mdFiles) {
+        try {
+          // キャッシュ対策を含めたリクエスト
+          const response = await fetch(file + '?v=' + Date.now());
+          
+          if (!response.ok) {
+            const errCard = document.createElement('div');
+            errCard.style.color = '#d9534f';
+            errCard.style.padding = '1rem';
+            errCard.innerText = `ファイルが見つかりません (${response.status}): ${file}`;
+            slider.appendChild(errCard);
+            continue;
+          }
+          
+          const text = await response.text();
+
+          // q:, a: (または 1:), video: のパターンをパース
+          const qMatch = text.match(/q:\s*(.*)/i);
+          const aMatch = text.match(/(?:a|1):\s*(.*)/i);
+          const videoMatch = text.match(/video:\s*(.*)/i);
+
+          const q = qMatch ? qMatch[1].trim() : '質問なし';
+          const a = aMatch ? aMatch[1].trim() : '回答なし';
+          const videoSrc = videoMatch ? videoMatch[1].trim() : '';
+
+          const card = document.createElement('div');
+          card.className = 'slide-card';
+          card.innerHTML = `
+            <div class="qa-box">
+              <div class="q-text">Q. ${q}</div>
+              <div class="a-text">AI: ${a}</div>
+            </div>
+            <div class="video-box">
+              ${videoSrc ? `<video src="${videoSrc}" controls preload="metadata"></video>` : '<p style="font-size:0.8rem;color:#888;">動画なし</p>'}
+            </div>
+          `;
+
+          slider.appendChild(card);
+        } catch (e) {
+          const errCard = document.createElement('div');
+          errCard.style.color = '#d9534f';
+          errCard.style.padding = '1rem';
+          errCard.innerText = `エラー: ${file} (${e.message})`;
+          slider.appendChild(errCard);
+        }
+      }
+    }
+
+    // 画面読み込み時に実行
+    document.addEventListener('DOMContentLoaded', loadMarkdownSlides);
+  </script>
+
+</body>
+</html>
