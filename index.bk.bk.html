@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Portal Log — 魂の航海記</title>
+  <style>
+    body {
+      font-family: 'Georgia', 'Hiragino Mincho ProN', serif;
+      margin: 0; padding: 0;
+      background-color: #0f141d; color: #e0e6ed;
+    }
+    header {
+      background: linear-gradient(135deg, #1a2332 0%, #0d1117 100%);
+      border-bottom: 1px solid #30363d;
+      padding: 3rem 1rem; text-align: center;
+    }
+    header h1 { margin: 0; font-size: 2.2rem; letter-spacing: 0.1em; color: #58a6ff; }
+    header p { margin-top: 0.8rem; opacity: 0.7; font-style: italic; }
+    
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem; }
+    
+    /* 航海日誌（LOG）コンテナ */
+    .log-stream {
+      display: flex; flex-direction: column; gap: 2rem;
+      position: relative; padding-left: 1.5rem;
+      border-left: 2px solid #30363d;
+    }
+
+    /* 意志（WILL）を秘めた丸太カード */
+    .log-entry {
+      background: #161b22; border: 1px solid #30363d;
+      border-radius: 8px; padding: 1.8rem;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+      position: relative; transition: transform 0.3s ease;
+    }
+    .log-entry::before {
+      content: '◆'; position: absolute; left: -2.15rem; top: 1.8rem;
+      color: #58a6ff; background: #0f141d; padding: 0.2rem;
+    }
+    .log-entry:hover { transform: translateX(5px); border-color: #58a6ff; }
+
+    .log-meta { font-size: 0.85rem; color: #8b949e; margin-bottom: 0.8rem; }
+    .log-will { color: #f2994a; font-weight: bold; margin-bottom: 0.5rem; font-size: 1.1rem; }
+    .q-text { color: #ff7b72; font-size: 1rem; margin-bottom: 0.5rem; }
+    .a-text { color: #79c0ff; background: #0d1117; padding: 1rem; border-radius: 6px; font-size: 0.95rem; line-height: 1.7; }
+    
+    .video-box video { width: 100%; max-height: 360px; border-radius: 6px; margin-top: 1rem; background: #000; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>マイ・ポータル・ログ</h1>
+    <p>丸太（LOG）を投じ、速度を測り、刻む — 魂の航海記（WILL）</p>
+  </header>
+
+  <div class="container">
+    <!-- 航海日誌（ログ）の流れる場 -->
+    <div class="log-stream" id="log-anchor"></div>
+  </div>
+
+  <script>
+    // ==========================================
+    // 1. 意志（WILL）を保持する核：LogEntry（カプセル化）
+    // ==========================================
+    class LogEntry {
+      constructor(data) {
+        this.knot = data.knot || '第1節（Knot）'; // 航海速度・位置
+        this.will = data.will || '魂の目的・意志';
+        this.q = data.q || '';
+        this.a = data.a || '';
+        this.videoSrc = data.videoSrc || '';
+      }
+
+      // インスタンス自身が姿を描画する（能力の解放）
+      render() {
+        const entryEl = document.createElement('article');
+        entryEl.className = 'log-entry';
+        
+        entryEl.innerHTML = `
+          <div class="log-meta">航行記録: ${this.knot}</div>
+          <div class="log-will">【玉思惟 - WILL】 ${this.will}</div>
+          <div class="qa-box">
+            <div class="q-text">問（Q）: ${this.q}</div>
+            <div class="a-text">答（AI）: ${this.a}</div>
+          </div>
+          ${this.videoSrc ? `
+            <div class="video-box">
+              <video src="${this.videoSrc}" controls preload="metadata"></video>
+            </div>` : ''}
+        `;
+        return entryEl;
+      }
+    }
+
+    // ==========================================
+    // 2. 魂の航海を司るエンジン：PortalLogEngine
+    // ==========================================
+    class PortalLogEngine {
+      constructor(targetSelector) {
+        this.anchor = document.querySelector(targetSelector);
+        this.logs = []; // 記憶されたLogEntryインスタンスの配列
+      }
+
+      // 丸太（Log）を投げ入れ、記録を刻むメソッド
+      castLog(logInstance) {
+        this.logs.push(logInstance);
+        if (this.anchor) {
+          this.anchor.appendChild(logInstance.render());
+        }
+      }
+    }
+
+    // ==========================================
+    // 実行の場：航海記の自動展開
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      const engine = new PortalLogEngine('#log-anchor');
+
+      // 1つ目の丸太（航行記録）を投入
+      engine.castLog(new LogEntry({
+        knot: 'KNOT 01 — 運玉森',
+        will: '「未知への招待」',
+        q: 'みんな一緒についておいでよ！…運玉森を案内するから💛',
+        a: 'わぁ～ぃ…マジムンさとしさんが秘密の森に連れて行くんだってぇ💗',
+        videoSrc: 'assets/videos/scene01.mp4' // 実際の動画パス
+      }));
+
+      // 2つ目の丸太（航行記録）を投入
+      engine.castLog(new LogEntry({
+        knot: 'KNOT 02 — 与那原の海',
+        will: '「時空を超える跳躍」',
+        q: 'どぉ～だい…ここ…いいしょっ？',
+        a: 'よぉ～し…マジムンさとしさん…今度はあの与那原の海に飛んで行ってみようよぉ～',
+        videoSrc: 'assets/videos/scene02.mp4'
+      }));
+    });
+  </script>
+
+</body>
+</html>
