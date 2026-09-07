@@ -80,35 +80,40 @@
     </section>
   </div>
 
-  <script>// 先頭に ./ を付与して相対パスを明示します
+  <script>
+    // GitHub Pagesで確実に読み込むため、先頭の ./ を外して指定します
     const mdFiles = [
-      './documents/scene01.md',
-      './documents/scene02.md'
+      'documents/scene01.md',
+      'documents/scene02.md'
     ];
 
     async function loadMarkdownSlides() {
       const slider = document.getElementById('md-slider');
-      slider.innerHTML = ''; // 一度クリア
+      slider.innerHTML = ''; // 初期化
       
       for (const file of mdFiles) {
         try {
-          // キャッシュを回避して最新ファイルを読み込む
-          const response = await fetch(file + '?v=' + new Date().getTime());
+          // キャッシュ対策を含めたリクエスト
+          const response = await fetch(file + '?v=' + Date.now());
           
           if (!response.ok) {
-            slider.innerHTML += `<div style="color:red; padding:1rem;">ファイルが見つかりません (${response.status}): ${file}</div>`;
+            const errCard = document.createElement('div');
+            errCard.style.color = '#d9534f';
+            errCard.style.padding = '1rem';
+            errCard.innerText = `ファイルが見つかりません (${response.status}): ${file}`;
+            slider.appendChild(errCard);
             continue;
           }
           
           const text = await response.text();
 
-          // q:, a: (または 1:), video: のパターンを読み取る
+          // q:, a: (または 1:), video: のパターンをパース
           const qMatch = text.match(/q:\s*(.*)/i);
           const aMatch = text.match(/(?:a|1):\s*(.*)/i);
           const videoMatch = text.match(/video:\s*(.*)/i);
 
-          const q = qMatch ? qMatch[1].trim() : '';
-          const a = aMatch ? aMatch[1].trim() : '';
+          const q = qMatch ? qMatch[1].trim() : '質問なし';
+          const a = aMatch ? aMatch[1].trim() : '回答なし';
           const videoSrc = videoMatch ? videoMatch[1].trim() : '';
 
           const card = document.createElement('div');
@@ -119,18 +124,23 @@
               <div class="a-text">AI: ${a}</div>
             </div>
             <div class="video-box">
-              <video src="${videoSrc}" controls preload="metadata"></video>
+              ${videoSrc ? `<video src="${videoSrc}" controls preload="metadata"></video>` : '<p style="font-size:0.8rem;color:#888;">動画なし</p>'}
             </div>
           `;
 
           slider.appendChild(card);
         } catch (e) {
-          slider.innerHTML += `<div style="color:red; padding:1rem;">エラー: ${file} (${e.message})</div>`;
+          const errCard = document.createElement('div');
+          errCard.style.color = '#d9534f';
+          errCard.style.padding = '1rem';
+          errCard.innerText = `エラー: ${file} (${e.message})`;
+          slider.appendChild(errCard);
         }
       }
     }
 
-    loadMarkdownSlides();
+    // 画面読み込み時に実行
+    document.addEventListener('DOMContentLoaded', loadMarkdownSlides);
   </script>
 
 </body>
